@@ -1,9 +1,9 @@
+from __future__ import with_statement
 from logger import LOG
 import sys
 import time
 import serial
-from __future__ import with_statement
-#import array
+import settings
 
 connection = serial.Serial(
     port = settings.SERIAL['port'],
@@ -13,13 +13,13 @@ connection = serial.Serial(
     bytesize = settings.SERIAL['bytesize'],
 	timeout = settings.SERIAL['timeout'],
 	write_timeout = 10,
-	exclusive = True,
+	#exclusive = True
 )
 try: 
     connection.open()
 except:
 	LOG.exception(sys.exc_info()[0])
-    exit()
+	exit()
 
 def Close():
     if connection.isOpen(): connection.close()
@@ -46,7 +46,7 @@ def RequestDNP3(data_in):
 				# raise Exception('not all read: ' + str(connection.outWaiting()))
 			#return out
 			out1 = connection.read(3)
-			if !out1 or len(out1) < 3:
+			if not out1 or len(out1) < 3:
 				raise Exception('Response timeout in serial port.')
 			out2 = connection.read(out1[2] + 2)			
 			LOG.info('Out:' + str(out1) + str(out2))

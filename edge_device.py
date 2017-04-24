@@ -9,7 +9,7 @@ LOG.info('STARTING')
 def signal_handler(signal, frame):
 	LOG.info('EXITING...')
 	serial_client.Close()
-    raise ExitCommand()
+	raise ExitCommand()
 
 signal.signal(signal.SIGUSR1, signal_handler)
 

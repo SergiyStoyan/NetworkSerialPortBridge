@@ -1,8 +1,8 @@
 import serial
 
 HOST = {
-	'ip': '172.0.0.1'
-	'port': 512
+	'ip': '172.0.0.1',
+	'port': 512,
 }
 		
 SERIAL = {
@@ -17,7 +17,7 @@ SERIAL = {
 SCHEDULES = [
 	{
 		'period': 300,
-		'request_file': 'home/develop/requests/1'
-		'tcp': true
+		'request_file': '/home/develop/edge_device/requests/1',
+		'tcp': True,
 	},
 ]

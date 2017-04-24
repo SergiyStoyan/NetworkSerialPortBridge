@@ -4,7 +4,7 @@ import sys
 import threading
 import serial_client
 
-def service_tcp()
+def service_tcp():
 	try:
 		LOG.info('Starting tcp server')
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,10 +28,10 @@ def service_tcp()
 					except socket.timeout:
 						pass
 					LOG.info('TCP received: ' + data_in)
-					if !data_in:
+					if not data_in:
 						break	
 					data_out = serial_client.RequestDNP3(data_in)
-					if !data_out:
+					if not data_out:
 						break
 					connection.sendall(data_out)
 			finally:
@@ -43,7 +43,7 @@ def service_tcp()
 		os.kill(os.getpid(), signal.SIGINT)
 		exit()
 	
-def service_udp()
+def service_udp():
 	try:
 		LOG.info('Starting udp server')
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -51,13 +51,12 @@ def service_udp()
 		s.bind(server_address)
 
 		while True:
-			try:
-				data_in, client_address = s.recvfrom(1000)
-				LOG.info('UDP received: ' + data_in)
-			if !data_in:
+			data_in, client_address = s.recvfrom(1000)
+			LOG.info('UDP received: ' + data_in)
+			if not data_in:
 				continue	
 			data_out = serial_client.RequestDNP3(data_in)
-			if !data_out:
+			if not data_out:
 				continue
 			s.sendto(data_out, client_address)
 	except:
