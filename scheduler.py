@@ -12,7 +12,7 @@ def service(period, request_file, tcp):
 			
 			with open(request_file, mode='rb') as file:
 				data_in = file.read()	
-			data_out = serial_client.Request(data_in)
+			data_out = serial_client.RequestDNP3(data_in)
 			if !data_out:
 				continue
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

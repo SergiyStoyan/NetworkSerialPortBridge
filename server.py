@@ -30,7 +30,7 @@ def service_tcp()
 					LOG.info('TCP received: ' + data_in)
 					if !data_in:
 						break	
-					data_out = serial_client.Request(data_in)
+					data_out = serial_client.RequestDNP3(data_in)
 					if !data_out:
 						break
 					connection.sendall(data_out)
@@ -56,7 +56,7 @@ def service_udp()
 				LOG.info('UDP received: ' + data_in)
 			if !data_in:
 				continue	
-			data_out = serial_client.Request(data_in)
+			data_out = serial_client.RequestDNP3(data_in)
 			if !data_out:
 				continue
 			s.sendto(data_out, client_address)

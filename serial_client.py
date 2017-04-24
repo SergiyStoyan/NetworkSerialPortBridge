@@ -26,7 +26,7 @@ def Close():
 
 lock = Lock()
 	
-def Request(data_in):
+def RequestDNP3(data_in):
 	global lock, connection
 	with lock:
 		try:
