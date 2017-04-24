@@ -26,19 +26,20 @@ def Close():
 
 lock = Lock()
 	
-def Request(content):
+def Request(data_in):
 	global lock, connection
 	with lock:
 		try:
+			LOG.info('In:' + str(data_in))
 			connection.flushInput() #flush input buffer, discarding all its contents
 			connection.flushOutput()#flush output buffer, aborting current output 
 			#if not connection.isOpen():
 			#try:
-			written_len = connection.write(content)			
+			written_len = connection.write(data_in)			
 			#except SerialTimeoutException, e:
 			#	print "timeout writing: " + str(e)
-			if written_len < len(content):
-				raise Exception('written less then put: ' + written_len + ' < ' + len(content))  
+			if written_len < len(data_in):
+				raise Exception('written less than should: ' + written_len + ' < ' + len(data_in))  
 			time.sleep(1)
 			# out = connection.read(1000)
 			# if connection.outWaiting() > 0:
@@ -47,7 +48,8 @@ def Request(content):
 			out1 = connection.read(3)
 			if !out1 or len(out1) < 3:
 				raise Exception('Response timeout in serial port.')
-			out2 = connection.read(out1[2] + 2)
+			out2 = connection.read(out1[2] + 2)			
+			LOG.info('Out:' + str(out1) + str(out2))
 			if connection.outWaiting() > 0:
 				#packet_size = out1[2] + 5
 				raise Exception('Not all read. Waiting: ' + str(connection.outWaiting()) + '. Read: ' + str(len(out1) + len(out2)) + '. Packet size:' + str(out1[2] + 5))
