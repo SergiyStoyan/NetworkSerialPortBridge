@@ -6,7 +6,7 @@ HOST = {
 }
 		
 SERIAL = {
-	'port': '/dev/ttyUSB1',
+	'port': '/dev/ttyUSB',
     'baudrate': 9600,
     'parity': serial.PARITY_ODD,
     'stopbits': serial.STOPBITS_TWO,

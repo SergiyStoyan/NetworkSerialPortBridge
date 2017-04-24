@@ -2,12 +2,12 @@ from logger import LOG
 import sys
 import server
 import scheduler
-import serial_client
 
 LOG.info('STARTING')
 
 def signal_handler(signal, frame):
 	LOG.info('EXITING...')
+	import serial_client
 	serial_client.Close()
 	raise ExitCommand()
 
