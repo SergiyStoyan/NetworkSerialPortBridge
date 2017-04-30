@@ -89,12 +89,12 @@ def Stop():
 	run = False
 	global socket_tcp
 	if socket_tcp:
-		socket_tcp.shutdown(socket.SHUT_RDWR)
+		#socket_tcp.shutdown(socket.SHUT_RDWR)
 		socket_tcp.close()	
 		socket_tcp = None
 	global socket_udp
 	if socket_udp:
-		socket_udp.shutdown(socket.SHUT_RDWR)
+		#socket_udp.shutdown(socket.SHUT_RDWR)
 		socket_udp.close()	
 		socket_udp = None
 		

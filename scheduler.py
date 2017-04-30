@@ -60,7 +60,7 @@ def start_schedule(schedule):
 	if schedule['request_file'] in request_files2thread:
 		return
 	LOG.info('Starting schedule: ' + str(schedule))
-	t = threading.Thread(target = service, args = schedule)
+	t = threading.Thread(target = service, args = (schedule,))
 	t.daemon = True
 	t.start()
 	request_files2thread[schedule['request_file']] = t
@@ -70,7 +70,7 @@ def Stop():
 	run = False
 	global socket_
 	if socket_:
-		socket_.shutdown(socket.SHUT_RDWR)
+		#socket_.shutdown(socket.SHUT_RDWR)
 		socket_.close()	
 		socket_ = None
 				
