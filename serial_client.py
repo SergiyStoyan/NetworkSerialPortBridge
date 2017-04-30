@@ -22,7 +22,7 @@ except:
 	try: 
 		if not connection.isOpen():
 			connection.open()
-		LOG.info('serial port open: ' + str(settings.SERIAL))
+		LOG.info('Serial port open: ' + str(settings.SERIAL))
 	except:
 		LOG.exception(sys.exc_info()[0])
 		exit()
@@ -48,12 +48,12 @@ def RequestDNP3(data_in, comment):
 			#except SerialTimeoutException, e:
 			#	print "timeout writing: " + str(e)
 			if written_len < len(data_in):
-				raise Exception('written less than should: ' + written_len + ' < ' + len(data_in))  
+				raise Exception('Serial port: written less than should: ' + written_len + ' < ' + len(data_in))  
 			
 			out = connection.read(PacketOversize)
-			LOG.info('Out:' + out)
+			LOG.info(comment + '\r\nOut:' + out)
 			if len(out) == PacketOversize:
-				raise Exception('not all read from serial port.')
+				raise Exception('Serial port: not all read from serial port.')
 			return out
 			
 			# out1 = connection.read(3)
