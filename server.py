@@ -41,7 +41,9 @@ def service_tcp():
 					data_out = serial_client.RequestDNP3(data_in, 'TCP request.')
 					if not data_out:
 						break
-					connection.sendall(data_out)
+					connection.sendall(data_out)	
+			except:
+				LOG.exception(sys.exc_info()[0])	
 			finally:
 				connection.close()
 				LOG.info('Connection closed')
@@ -61,15 +63,18 @@ def service_udp():
 		s.bind(server_address)
 
 		while run:
-			data_in, client_address = s.recvfrom(serial_client.PacketOversize)
-			if len(data_in) == serial_client.PacketOversize:
-				raise Exception('UDP: not all read from network port.')	
-			if not data_in:
-				continue	
-			data_out = serial_client.RequestDNP3(data_in, 'UDP request.')
-			if not data_out:
-				continue
-			s.sendto(data_out, client_address)
+			try:
+				data_in, client_address = s.recvfrom(serial_client.PacketOversize)
+				if len(data_in) == serial_client.PacketOversize:
+					raise Exception('UDP: not all read from network port.')	
+				if not data_in:
+					continue	
+				data_out = serial_client.RequestDNP3(data_in, 'UDP request.')
+				if not data_out:
+					continue
+				s.sendto(data_out, client_address)
+			except:
+				LOG.exception(sys.exc_info()[0])
 	except:
 		LOG.exception(sys.exc_info()[0])
 		#thread.interrupt_main() 

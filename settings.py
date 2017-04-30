@@ -27,4 +27,9 @@ SCHEDULES = [
 		'request_file': '/home/develop/edge_device/test_files/0',
 		'tcp': True,
 	},
+	{
+		'period': 50,
+		'request_file': '/home/develop/edge_device/test_files/1',
+		'tcp': True,
+	},
 ]
