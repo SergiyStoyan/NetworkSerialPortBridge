@@ -28,6 +28,7 @@ def service(schedule):
 				global socket_
 				socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				server_address = (settings.REMOTE_HOST['ip'], settings.REMOTE_HOST['port'])
+				LOG.info("Schedule: replying to: " + str(server_address))
 				try:
 					if schedule['tcp']:
 						socket_.connect(server_address)
