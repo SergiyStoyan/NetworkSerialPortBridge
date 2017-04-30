@@ -1,10 +1,13 @@
 from logger import LOG
 import socket
-import sys
 import threading
 import serial_client
+import settings
 
 def service_tcp():
+	import sys
+	import os
+	import signal
 	try:
 		LOG.info('Starting tcp server')
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,9 +44,11 @@ def service_tcp():
 		LOG.exception(sys.exc_info()[0])
 		#thread.interrupt_main() 
 		os.kill(os.getpid(), signal.SIGINT)
-		exit()
 	
 def service_udp():
+	import sys
+	import os
+	import signal
 	try:
 		LOG.info('Starting udp server')
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -63,7 +68,6 @@ def service_udp():
 		LOG.exception(sys.exc_info()[0])
 		#thread.interrupt_main() 
 		os.kill(os.getpid(), signal.SIGINT)
-		exit()
 	
 service_tcp_t = None
 service_udp_t = None
@@ -83,4 +87,4 @@ def Start():
 	if service_udp_t == None:
 		service_udp_t = threading.Thread(target = service_udp, args = ())
 		service_udp_t.daemon = True
-		service_udp_t.start()
+		service_udp_t.start()	

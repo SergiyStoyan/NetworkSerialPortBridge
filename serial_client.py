@@ -4,27 +4,33 @@ import sys
 import time
 import serial
 import settings
+import threading
 
-connection = serial.Serial(
-    port = settings.SERIAL['port'],
-    baudrate = settings.SERIAL['baudrate'],
-    parity = settings.SERIAL['parity'],
-    stopbits = settings.SERIAL['stopbits'],
-    bytesize = settings.SERIAL['bytesize'],
-	timeout = settings.SERIAL['timeout'],
-	write_timeout = 10,
-	#exclusive = True
-)
-try: 
-    connection.open()
+try:
+	connection
 except:
-	LOG.exception(sys.exc_info()[0])
-	exit()
+	connection = serial.Serial(
+		port = settings.SERIAL['port'],
+		baudrate = settings.SERIAL['baudrate'],
+		parity = settings.SERIAL['parity'],
+		stopbits = settings.SERIAL['stopbits'],
+		bytesize = settings.SERIAL['bytesize'],
+		timeout = settings.SERIAL['timeout'],
+		write_timeout = 10,
+		#exclusive = True
+	)
+	try: 
+		if not connection.isOpen():
+			connection.open()
+		LOG.info('serial port open')
+	except:
+		LOG.exception(sys.exc_info()[0])
+		exit()
 
 def Close():
     if connection.isOpen(): connection.close()
 
-lock = Lock()
+lock = threading.Lock()
 	
 def RequestDNP3(data_in):
 	global lock, connection

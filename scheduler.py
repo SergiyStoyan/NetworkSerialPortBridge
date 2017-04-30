@@ -3,9 +3,13 @@ import sys
 import time
 import serial_client
 import socket
+import settings
 import threading
 
 def service(period, request_file, tcp):
+	import sys
+	import os
+	import signal
 	try:
 		while True:
 			time1 = int(time.time())
@@ -13,7 +17,7 @@ def service(period, request_file, tcp):
 			with open(request_file, mode='rb') as file:
 				data_in = file.read()	
 			data_out = serial_client.RequestDNP3(data_in)
-			if !data_out:
+			if not data_out:
 				continue
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			server_address = (settings.HOST['ip'], settings.HOST['port'])
@@ -33,15 +37,14 @@ def service(period, request_file, tcp):
 			time.sleep(period1) 
 	except:
 		LOG.exception(sys.exc_info()[0])
-		#thread.interrupt_main() 
+		#thread.interrupt_main()
 		os.kill(os.getpid(), signal.SIGINT)
-		exit()
 
 request_files2thread = {}
 	
 def start_schedule(period, request_file, tcp):	
 	global request_files2thread	
-	if request_files2thread[request_file] != None:
+	if request_file in request_files2thread:
 		return
 	LOG.info('Starting schedule: ' + request_file)
 	t = threading.Thread(target = service, args = (period, request_file, tcp))
