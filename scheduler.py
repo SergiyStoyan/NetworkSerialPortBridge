@@ -27,7 +27,7 @@ def service(period, request_file, tcp):
 					return
 				global socket_
 				socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-				server_address = (settings.HOST['ip'], settings.HOST['port'])
+				server_address = (settings.REMOTE_HOST['ip'], settings.REMOTE_HOST['port'])
 				try:
 					if tcp:
 						socket_.connect(server_address)

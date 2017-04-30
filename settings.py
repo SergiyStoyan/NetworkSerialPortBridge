@@ -1,8 +1,13 @@
 import serial
 
-HOST = {
+LOCAL_HOST = {
 	#'ip': '127.0.0.1',
 	#'ip': '71.246.43.250',	
+	'ip': '0.0.0.0',	
+	'port': 20000,
+}
+
+REMOTE_HOST = {
 	'ip': '0.0.0.0',	
 	'port': 20000,
 }
@@ -17,9 +22,9 @@ SERIAL = {
 }
 	
 SCHEDULES = [
-	# {
-		# 'period': 300,
-		# 'request_file': '/home/develop/edge_device/test_files/1',
-		# 'tcp': True,
-	# },
+	{
+		'period': 30,
+		'request_file': '/home/develop/edge_device/test_files/0',
+		'tcp': True,
+	},
 ]

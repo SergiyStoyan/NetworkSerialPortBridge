@@ -9,9 +9,9 @@ def service_tcp():
 	import os
 	import signal
 	try:
-		LOG.info('Starting tcp server: ' + str(settings.HOST))
+		LOG.info('Starting tcp server: ' + str(settings.LOCAL_HOST))
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		server_address = (settings.HOST['ip'], settings.HOST['port'])
+		server_address = (settings.LOCAL_HOST['ip'], settings.LOCAL_HOST['port'])
 		s.bind(server_address)
 		#s.settimeout(3)
 		s.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -20,17 +20,21 @@ def service_tcp():
 		s.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 3)#closes the connection after max_fails failed pings
 		s.listen(1)
 
+		#file_id = 0
 		while run:
 			try:
 				connection, client_address = s.accept()
-				LOG.info('Connection accepted from: ' + str(client_address))
+				LOG.info('Tcp connection accepted from: ' + str(client_address))
 				connection.settimeout(3)
 				while True:
 					try:
 						data_in = connection.recv(serial_client.PacketOversize)
 					except socket.timeout:
 						pass
-					LOG.info('TCP received: ' + data_in)					
+					LOG.info('TCP received.')					
+					#with open('/home/develop/edge_device/test_files/' + str(file_id), 'w') as file:
+					#	file.write(data_in)	
+					#	file_id = file_id + 1
 					if len(data_in) == serial_client.PacketOversize:
 						raise Exception('not all read from network port.')					
 					if not data_in:
@@ -52,14 +56,14 @@ def service_udp():
 	import os
 	import signal
 	try:
-		LOG.info('Starting udp server: ' + str(settings.HOST))
+		LOG.info('Starting udp server: ' + str(settings.LOCAL_HOST))
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		server_address = (settings.HOST['ip'], settings.HOST['port'])
+		server_address = (settings.LOCAL_HOST['ip'], settings.LOCAL_HOST['port'])
 		s.bind(server_address)
 
 		while run:
 			data_in, client_address = s.recvfrom(serial_client.PacketOversize)
-			LOG.info('UDP received: ' + data_in)					
+			LOG.info('UDP received.')					
 			if len(data_in) == serial_client.PacketOversize:
 				raise Exception('not all read from network port.')	
 			if not data_in:

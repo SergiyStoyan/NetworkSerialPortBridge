@@ -22,7 +22,7 @@ except:
 	try: 
 		if not connection.isOpen():
 			connection.open()
-		LOG.info('serial port open')
+		LOG.info('serial port open: ' + str(settings.SERIAL))
 	except:
 		LOG.exception(sys.exc_info()[0])
 		exit()
