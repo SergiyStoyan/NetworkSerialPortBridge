@@ -8,17 +8,18 @@ import threading
 
 lock = threading.Lock()
 
-def service(schedule):
+def service(schedule, id):
 	import sys
 	import os
 	import signal
 	try:
+		LOG.info('Starting schedule[' + str(id) + ']: ' + str(schedule))
 		while run:
 			time1 = int(time.time())
 			
 			with open(schedule['request_file'], mode='rb') as file:
 				data_in = file.read()	
-			data_out = serial_client.RequestDNP3(data_in, 'Scheduled request.')
+			data_out = serial_client.RequestDNP3(data_in, 'Schedule[' + str(id) + ']: request')
 			if not data_out:
 				continue
 			global lock
@@ -28,7 +29,7 @@ def service(schedule):
 				global socket_
 				socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				server_address = (settings.REMOTE_HOST['ip'], settings.REMOTE_HOST['port'])
-				LOG.info("Schedule: replying to: " + str(server_address))
+				LOG.info('Schedule[' + str(id) + ']: replying to: ' + str(server_address))
 				try:
 					if schedule['tcp']:
 						socket_.connect(server_address)
@@ -37,7 +38,7 @@ def service(schedule):
 						socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 						sent = socket_.sendto(data_out, server_address)	
 					if sent != len(data_out):
-						raise Exception('Schedule: not all data sent.')	
+						raise Exception('Schedule[' + str(id) + ']: not all data sent.')	
 				except:
 					LOG.exception(sys.exc_info()[0])	
 				finally:
@@ -63,8 +64,7 @@ def start_schedule(schedule):
 	global request_files2thread	
 	if schedule['request_file'] in request_files2thread:
 		return
-	LOG.info('Starting schedule: ' + str(schedule))
-	t = threading.Thread(target = service, args = (schedule,))
+	t = threading.Thread(target = service, args = (schedule, len(request_files2thread)))
 	t.daemon = True
 	t.start()
 	request_files2thread[schedule['request_file']] = t

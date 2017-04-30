@@ -39,8 +39,7 @@ def RequestDNP3(data_in, comment):
 	global lock, connection
 	with lock:
 		try:
-			LOG.info(comment)
-			LOG.info('In:' + str(data_in))
+			LOG.info(comment + '\r\nIn:' + str(data_in))
 			connection.flushInput() #flush input buffer, discarding all its contents
 			connection.flushOutput()#flush output buffer, aborting current output 
 			#if not connection.isOpen():
