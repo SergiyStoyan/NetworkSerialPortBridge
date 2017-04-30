@@ -67,6 +67,7 @@ def start_schedule(schedule):
 def Stop():
 	global run
 	run = False
+	global socket_
 	if socket_:
 		socket_.shutdown(socket.SHUT_RDWR)
 		socket_.close()	

@@ -50,20 +50,23 @@ def RequestDNP3(data_in):
 			if written_len < len(data_in):
 				raise Exception('written less than should: ' + written_len + ' < ' + len(data_in))  
 			
-			out = connection.read(PacketOversize)
-			LOG.info('Out:' + out)
-			if len(out) == PacketOversize:
-				raise Exception('not all read from serial port.')
-			return out
+			# out = connection.read(PacketOversize)
+			# LOG.info('Out:' + out)
+			# if len(out) == PacketOversize:
+				# raise Exception('not all read from serial port.')
+			# return out
 			
-			# out1 = connection.read(3)
-			# if not out1 or len(out1) < 3:
-				# raise Exception('Response timeout in serial port.')
-			# out2 = connection.read(int(out1[2]) + 2)
-			# LOG.info('Out:' + str(out1) + str(out2))
-			# if connection.outWaiting() > 0:
-				# #packet_size = out1[2] + 5
-				# raise Exception('Not all read. Waiting: ' + str(connection.outWaiting()) + '. Read: ' + str(len(out1) + len(out2)) + '. Packet size:' + str(int(out1[2]) + 5))
-			# return out1 + out2
+			out1 = connection.read(3)
+			if not out1 or len(out1) < 3:
+				raise Exception('Response timeout in serial port.')
+			LOG.info('Packet size:' + str(ord(out1[2]) + 5))
+			out2 = connection.read(ord(out1[2]) + 2)
+			LOG.info('Out:' + out1 + out2)
+			connection.timeout = 0
+			r = connection.read(1)				
+			connection.timeout = settings.SERIAL['timeout']
+			if r:
+				raise Exception('not all read from serial port.')
+			return out1 + out2
 		except:
 			LOG.exception(sys.exc_info()[0])
