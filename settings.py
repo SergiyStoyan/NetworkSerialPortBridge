@@ -8,8 +8,8 @@ LOCAL_HOST = {
 }
 
 REMOTE_HOST = {
-	'ip': '0.0.0.0',	
-	'port': 20000,
+	'ip': '71.246.43.242', 	
+	'port': 63842,
 }
 		
 SERIAL = {

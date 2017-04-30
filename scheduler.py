@@ -8,7 +8,7 @@ import threading
 
 lock = threading.Lock()
 
-def service(period, request_file, tcp):
+def service(schedule):
 	import sys
 	import os
 	import signal
@@ -16,7 +16,8 @@ def service(period, request_file, tcp):
 		while run:
 			time1 = int(time.time())
 			
-			with open(request_file, mode='rb') as file:
+			LOG.info("Scheduled request: " + str(schedule))
+			with open(schedule['request_file'], mode='rb') as file:
 				data_in = file.read()	
 			data_out = serial_client.RequestDNP3(data_in)
 			if not data_out:
@@ -29,7 +30,7 @@ def service(period, request_file, tcp):
 				socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				server_address = (settings.REMOTE_HOST['ip'], settings.REMOTE_HOST['port'])
 				try:
-					if tcp:
+					if schedule['tcp']:
 						socket_.connect(server_address)
 						socket_.send(data_out)
 					else:
@@ -40,7 +41,7 @@ def service(period, request_file, tcp):
 					socket_.close()	
 					socket_ = None
 			
-			period1 = time1 + period - int(time.time())
+			period1 = time1 + schedule['period'] - int(time.time())
 			if period1 < 0: 
 				period1 = 0
 			time.sleep(period1) 
@@ -56,13 +57,13 @@ request_files2thread = {}
 	
 def start_schedule(schedule):	
 	global request_files2thread	
-	if request_file in request_files2thread:
+	if schedule['request_file'] in request_files2thread:
 		return
 	LOG.info('Starting schedule: ' + str(schedule))
-	t = threading.Thread(target = service, args = (schedule['period'], schedule['request_file'], schedule['tcp']))
+	t = threading.Thread(target = service, args = schedule)
 	t.daemon = True
 	t.start()
-	request_files2thread[request_file] = t
+	request_files2thread[schedule['request_file']] = t
 	
 def Stop():
 	global run
