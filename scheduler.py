@@ -16,10 +16,9 @@ def service(schedule):
 		while run:
 			time1 = int(time.time())
 			
-			LOG.info("Scheduled request: " + str(schedule))
 			with open(schedule['request_file'], mode='rb') as file:
 				data_in = file.read()	
-			data_out = serial_client.RequestDNP3(data_in)
+			data_out = serial_client.RequestDNP3(data_in, 'Scheduled request.')
 			if not data_out:
 				continue
 			global lock

@@ -24,22 +24,21 @@ def service_tcp():
 		while run:
 			try:
 				connection, client_address = s.accept()
-				LOG.info('Tcp connection accepted from: ' + str(client_address))
+				LOG.info('TCP connection accepted from: ' + str(client_address))
 				connection.settimeout(3)
 				while True:
 					try:
 						data_in = connection.recv(serial_client.PacketOversize)
 					except socket.timeout:
-						pass
-					LOG.info('TCP received.')					
+						pass				
 					#with open('/home/develop/edge_device/test_files/' + str(file_id), 'w') as file:
 					#	file.write(data_in)	
 					#	file_id = file_id + 1
 					if len(data_in) == serial_client.PacketOversize:
-						raise Exception('not all read from network port.')					
+						raise Exception('TCP: not all read from network port.')					
 					if not data_in:
 						break	
-					data_out = serial_client.RequestDNP3(data_in)
+					data_out = serial_client.RequestDNP3(data_in, 'TCP request.')
 					if not data_out:
 						break
 					connection.sendall(data_out)
@@ -63,12 +62,11 @@ def service_udp():
 
 		while run:
 			data_in, client_address = s.recvfrom(serial_client.PacketOversize)
-			LOG.info('UDP received.')					
 			if len(data_in) == serial_client.PacketOversize:
-				raise Exception('not all read from network port.')	
+				raise Exception('UDP: not all read from network port.')	
 			if not data_in:
 				continue	
-			data_out = serial_client.RequestDNP3(data_in)
+			data_out = serial_client.RequestDNP3(data_in, 'UDP request.')
 			if not data_out:
 				continue
 			s.sendto(data_out, client_address)
