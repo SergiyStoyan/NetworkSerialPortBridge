@@ -31,12 +31,16 @@ def service(schedule):
 				try:
 					if schedule['tcp']:
 						socket_.connect(server_address)
-						socket_.send(data_out)
+						sent = socket_.send(data_out)						
 					else:
 						socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-						socket_.sendto(data_out, server_address)	
+						sent = socket_.sendto(data_out, server_address)	
+					if sent != len(data_out):
+						raise Exception('Schedule: not all data sent.')	
+				except:
+					LOG.exception(sys.exc_info()[0])	
 				finally:
-					socket_.shutdown(socket.SHUT_RDWR)
+					#socket_.shutdown(socket.SHUT_RDWR)
 					socket_.close()	
 					socket_ = None
 			
