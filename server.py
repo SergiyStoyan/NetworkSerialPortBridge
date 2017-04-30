@@ -9,7 +9,7 @@ def service_tcp():
 	import os
 	import signal
 	try:
-		LOG.info('Starting tcp server')
+		LOG.info('Starting tcp server: ' + str(settings.HOST))
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		server_address = (settings.HOST['ip'], settings.HOST['port'])
 		s.bind(server_address)
@@ -20,17 +20,19 @@ def service_tcp():
 		s.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 3)#closes the connection after max_fails failed pings
 		s.listen(1)
 
-		while True:
+		while run:
 			try:
 				connection, client_address = s.accept()
 				LOG.info('Connection accepted from: ' + str(client_address))
 				connection.settimeout(3)
 				while True:
 					try:
-						data_in = connection.recv(1000)
+						data_in = connection.recv(serial_client.PacketOversize)
 					except socket.timeout:
 						pass
-					LOG.info('TCP received: ' + data_in)
+					LOG.info('TCP received: ' + data_in)					
+					if len(data_in) == serial_client.PacketOversize:
+						raise Exception('not all read from network port.')					
 					if not data_in:
 						break	
 					data_out = serial_client.RequestDNP3(data_in)
@@ -50,14 +52,16 @@ def service_udp():
 	import os
 	import signal
 	try:
-		LOG.info('Starting udp server')
+		LOG.info('Starting udp server: ' + str(settings.HOST))
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		server_address = (settings.HOST['ip'], settings.HOST['port'])
 		s.bind(server_address)
 
-		while True:
-			data_in, client_address = s.recvfrom(1000)
-			LOG.info('UDP received: ' + data_in)
+		while run:
+			data_in, client_address = s.recvfrom(serial_client.PacketOversize)
+			LOG.info('UDP received: ' + data_in)					
+			if len(data_in) == serial_client.PacketOversize:
+				raise Exception('not all read from network port.')	
 			if not data_in:
 				continue	
 			data_out = serial_client.RequestDNP3(data_in)
@@ -69,15 +73,30 @@ def service_udp():
 		#thread.interrupt_main() 
 		os.kill(os.getpid(), signal.SIGINT)
 	
+socket_tcp = None
+socket_udp = None
+	
 service_tcp_t = None
 service_udp_t = None
-			
-# def Stop:
-	# LOG.info('STOPPING SERVER')
-	# if thread != None:
-		# thread.stop()	
 
+def Stop():
+	LOG.info('Stopping network server.')
+	global run
+	run = False
+	global socket_tcp
+	if socket_tcp:
+		socket_tcp.shutdown(socket.SHUT_RDWR)
+		socket_tcp.close()	
+		socket_tcp = None
+	global socket_udp
+	if socket_udp:
+		socket_udp.shutdown(socket.SHUT_RDWR)
+		socket_udp.close()	
+		socket_udp = None
+		
 def Start():
+	global run
+	run = True
 	global service_tcp_t
 	if service_tcp_t == None:
 		service_tcp_t = threading.Thread(target = service_tcp, args = ())

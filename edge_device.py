@@ -1,13 +1,16 @@
 from logger import LOG
+
+LOG.info('STARTING')
+
 import sys
 import server
 import scheduler
 import signal
 
-LOG.info('STARTING')
-
 def signal_handler(signal, frame):
 	LOG.info('EXITING...')
+	scheduler.Stop()
+	server.Stop()
 	import serial_client
 	serial_client.Close()
 	sys.exit()
